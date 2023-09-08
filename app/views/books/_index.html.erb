@@ -1,3 +1,6 @@
+<%= link_to '新しい順', books_path(latest: "true") %> |
+<%= link_to '古い順', books_path(oldest: "true") %> |
+<%= link_to '評価の高い順', books_path(star_count: "true") %>
 <table class='table table-hover table-inverse'>
   <thead>
     <tr>
@@ -19,6 +22,7 @@
         <td id="index_favorite_<%= book.id %>"><%= render 'favorites/favorite', book: book %></td>
         <td>コメント数: <%= book.book_comments.count %></td>
         <td><%= render "books/static_rate", book: book %></td>
+        <td><%= l book.created_at %></td>
       </tr>
     <% end %>
   </tbody>
