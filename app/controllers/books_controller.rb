@@ -8,6 +8,7 @@ class BooksController < ApplicationController
     @books = Book.all
     @book_new = Book.new
     @book_comment = BookComment.new
+    @book_tags = @book.tags
   end
 
   def index
@@ -21,12 +22,15 @@ class BooksController < ApplicationController
       @books = Book.all
     end
     @book = Book.new
+    @tag_lists = Tag.all
   end
 
   def create
     @book = Book.new(book_params)
     @book.user_id = current_user.id
+    tag_list = params[:book][:name].split(',')
     if @book.save
+      @book.save_tags(tag_list)
       redirect_to book_path(@book), notice: "You have created book successfully."
     else
       @books = Book.all
@@ -36,11 +40,14 @@ class BooksController < ApplicationController
 
   def edit
     @book = Book.find(params[:id])
+    @tag_list = @book.tags.pluck(:name).join(',')
   end
 
   def update
     @book = Book.find(params[:id])
+    tag_list=params[:book][:name].split(',')
     if @book.update(book_params)
+      @book.save_tags(tag_list)
       redirect_to book_path(@book), notice: "You have updated book successfully."
     else
       render "edit"
@@ -51,6 +58,16 @@ class BooksController < ApplicationController
     @book = Book.find(params[:id])
     @book.destroy
     redirect_to books_path
+  end
+
+  def search_tag
+    @tag_list = Tag.all
+    if params[:tag_id] != nil
+      @tag = Tag.find(params[:tag_id])
+    elsif params[:book_tag_id] != nil
+      @tag = Tag.find(params[:book_tag_id])
+    end
+    @books = @tag.books
   end
 
   private

@@ -1,3 +1,8 @@
+<% @tag_lists.each do |list|%>
+  <i class="fa-sharp fa-solid fa-tag"></i>
+  <%=link_to list.name, search_tag_path(tag_id: list.id) %>
+  <%="(#{list.books.count})" %>
+<% end %><br>
 <%= link_to '新しい順', books_path(latest: "true") %> |
 <%= link_to '古い順', books_path(oldest: "true") %> |
 <%= link_to '評価の高い順', books_path(star_count: "true") %>
@@ -19,6 +24,12 @@
         </td>
         <td><%= link_to book.title,book %></td>
         <td><%= book.body %></td>
+        <td>
+            <% book.tags.each do |tag| %>
+            <i class="fa-sharp fa-solid fa-tag"></i>
+              <%= link_to tag.name,search_tag_path(book_tag_id: tag.id) %>
+            <% end %>
+          </td>
         <td id="index_favorite_<%= book.id %>"><%= render 'favorites/favorite', book: book %></td>
         <td>コメント数: <%= book.book_comments.count %></td>
         <td><%= render "books/static_rate", book: book %></td>

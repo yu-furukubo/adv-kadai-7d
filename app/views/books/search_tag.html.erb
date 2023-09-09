@@ -1,0 +1,44 @@
+<div class='container'>
+  <h2>「<%=@tag.name%>」タグの投稿一覧</h2><br>
+  <% @tag_list.each do |list|%>
+    <i class="fa-sharp fa-solid fa-tag"></i>
+    <%=link_to list.name,search_tag_path(tag_id: list.id) %>
+    <%="(#{list.books.count})" %>
+  <% end %>
+  <table class='table table-hover table-inverse'>
+    <thead>
+      <tr>
+        <th></th>
+        <th>Title</th>
+        <th>Opinion</th>
+        <th>tag</th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @books.each do |book| %>
+        <tr>
+          <td><%= link_to(book.user) do %>
+            <%= image_tag book.user.get_profile_image, size:'50x50' %>
+            <% end %>
+          </td>
+          <td><%= link_to book.title,book %></td>
+          <td><%= book.body %></td>
+          <td>
+              <% book.tags.each do |tag| %>
+              <i class="fa-sharp fa-solid fa-tag"></i>
+                <%= link_to tag.name,search_tag_path(book_tag_id: tag.id) %>
+              <% end %>
+            </td>
+          <td id="index_favorite_<%= book.id %>"><%= render 'favorites/favorite', book: book %></td>
+          <td>コメント数: <%= book.book_comments.count %></td>
+          <td><%= render "books/static_rate", book: book %></td>
+          <td><%= l book.created_at %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
